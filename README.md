@@ -20,7 +20,7 @@ Basculer une ampoule inverse son état. Basculer **Toutes** éteint tout si au m
 
 La touche affiche le nom et l’état. Le plugin interroge l’API toutes les 3 secondes. Si le contrôleur est arrêté, la touche passe en alerte.
 
-Les 23 couleurs sont les mêmes que dans le contrôleur web (palette type Minecraft).
+La commande **Couleur** envoie en un seul appui une des 23 couleurs du contrôleur web et la luminosité du curseur. La commande **Luminosité** ne change que l’intensité.
 
 ## Prérequis
 

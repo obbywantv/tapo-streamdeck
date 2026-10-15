@@ -108,12 +108,17 @@ export class CommandAction extends SingletonAction<CommandSettings> {
 		}
 
 		if (command === "color") {
-			const hsv = hexToHsv(settings.preset || "#FFFFFF");
+			const hsv = hexToHsv(normalizeHex(settings.preset) || "#FFFFFF");
 			if (!hsv) {
 				throw new Error(`Couleur invalide : ${settings.preset ?? ""}`);
 			}
-			await client.setColor(target, hsv);
-			this.#afterSuccess(markFields(target, { brightness: hsv.brightness, effect_active: false }));
+			const brightness = clamp(Math.round(asNumber(settings.brightness, 80)), 1, 100);
+			await client.setColor(target, {
+				hue: hsv.hue,
+				saturation: hsv.saturation,
+				brightness,
+			});
+			this.#afterSuccess(markFields(target, { brightness, effect_active: false }));
 			return;
 		}
 
@@ -176,12 +181,16 @@ export class CommandAction extends SingletonAction<CommandSettings> {
 		const next: CommandSettings = {
 			target: settings.target || "all",
 			command: asCommand(settings.command),
-			preset: settings.preset || "#FFFFFF",
+			preset: normalizeHex(settings.preset) || "#FFFFFF",
 			brightness: asNumber(settings.brightness, 80),
 			speed: asNumber(settings.speed, 1),
 		};
 		const missing =
-			!settings.target || !settings.command || !settings.preset || settings.brightness === undefined || settings.speed === undefined;
+			!settings.target ||
+			!settings.command ||
+			!normalizeHex(settings.preset) ||
+			settings.brightness === undefined ||
+			settings.speed === undefined;
 		if (missing) {
 			await action.setSettings(next);
 		}
@@ -295,6 +304,15 @@ function deviceStatus(device: DeviceState): string {
 		return "Éteint";
 	}
 	return typeof device.brightness === "number" ? `${device.brightness}%` : "Allumé";
+}
+
+function normalizeHex(value: string | undefined): string {
+	if (!value || value === "custom") {
+		return "";
+	}
+	const raw = value.trim();
+	const hex = raw.startsWith("#") ? raw : `#${raw}`;
+	return /^#[0-9a-fA-F]{6}$/.test(hex) ? hex.toUpperCase() : "";
 }
 
 function clamp(value: number, min: number, max: number): number {

@@ -6,6 +6,7 @@ export type CommandSettings = {
 	target?: string;
 	command?: CommandName;
 	preset?: string;
+	hex?: string;
 	brightness?: number | string;
 	speed?: number | string;
 };
