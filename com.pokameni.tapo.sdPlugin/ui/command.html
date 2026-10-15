@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="fr">
+	<head>
+		<meta charset="utf-8" />
+		<script src="sdpi-components.js"></script>
+	</head>
+	<body>
+		<sdpi-item label="URL du serveur">
+			<sdpi-textfield setting="baseUrl" global placeholder="http://127.0.0.1:8000"></sdpi-textfield>
+		</sdpi-item>
+
+		<sdpi-item label="Token">
+			<sdpi-password setting="token" global placeholder="Optionnel"></sdpi-password>
+		</sdpi-item>
+
+		<sdpi-item label="Cible">
+			<sdpi-select
+				setting="target"
+				datasource="getDevices"
+				loading="Chargement des ampoules…"
+				placeholder="Choisir une ampoule"
+				default="all"
+			></sdpi-select>
+		</sdpi-item>
+
+		<sdpi-item label="Commande">
+			<sdpi-select setting="command" placeholder="Choisir" default="toggle">
+				<option value="toggle">Basculer</option>
+				<option value="on">Allumer</option>
+				<option value="off">Éteindre</option>
+				<option value="color">Couleur</option>
+				<option value="brightness">Luminosité</option>
+				<option value="rainbow">Rainbow</option>
+				<option value="police">Police</option>
+				<option value="stop">Stop</option>
+			</sdpi-select>
+		</sdpi-item>
+
+		<sdpi-item label="Couleur" id="field-color" style="display: none">
+			<sdpi-select setting="preset" default="#FFFFFF">
+				<option value="#FFFFFF">White</option>
+				<option value="#0000AA">Dark Blue</option>
+				<option value="#00AA00">Dark Green</option>
+				<option value="#00AAAA">Dark Aqua</option>
+				<option value="#AA0000">Dark Red</option>
+				<option value="#AA00AA">Dark Purple</option>
+				<option value="#FFAA00">Gold</option>
+				<option value="#5555FF">Blue</option>
+				<option value="#55FF55">Green</option>
+				<option value="#55FFFF">Aqua</option>
+				<option value="#FF5555">Red</option>
+				<option value="#FF55FF">Light Purple</option>
+				<option value="#FFFF55">Yellow</option>
+				<option value="#DDD605">Minecoin Gold</option>
+				<option value="#971607">Redstone</option>
+				<option value="#B4684D">Copper</option>
+				<option value="#DEB12D">Material Gold</option>
+				<option value="#47A036">Emerald</option>
+				<option value="#2CBAA8">Diamond</option>
+				<option value="#21497B">Lapis</option>
+				<option value="#9A5CC6">Amethyst</option>
+				<option value="#EB7114">Resin</option>
+				<option value="#8BB3FF">Light Blue</option>
+			</sdpi-select>
+		</sdpi-item>
+
+		<sdpi-item label="Luminosité" id="field-brightness" style="display: none">
+			<sdpi-range setting="brightness" min="1" max="100" step="1" default="80" showlabels></sdpi-range>
+		</sdpi-item>
+
+		<sdpi-item label="Vitesse" id="field-speed" style="display: none">
+			<sdpi-range setting="speed" min="0.2" max="3" step="0.1" default="1" showlabels></sdpi-range>
+		</sdpi-item>
+
+		<script>
+			const { streamDeckClient } = SDPIComponents;
+			const fields = {
+				color: document.getElementById("field-color"),
+				brightness: document.getElementById("field-brightness"),
+				speed: document.getElementById("field-speed"),
+			};
+			const visibleFor = {
+				color: ["color"],
+				brightness: ["brightness"],
+				speed: ["rainbow", "police"],
+			};
+
+			function apply(settings) {
+				const command = (settings && settings.command) || "toggle";
+				for (const name of Object.keys(fields)) {
+					fields[name].style.display = visibleFor[name].includes(command) ? "" : "none";
+				}
+			}
+
+			streamDeckClient.didReceiveSettings.subscribe((event) => {
+				const settings = event && event.payload ? event.payload.settings : undefined;
+				apply(settings);
+			});
+
+			streamDeckClient
+				.getSettings()
+				.then((payload) => apply(payload && payload.settings))
+				.catch(() => apply({}));
+		</script>
+	</body>
+</html>

@@ -1,0 +1,55 @@
+{
+	"$schema": "https://schemas.elgato.com/streamdeck/plugins/manifest.json",
+	"UUID": "com.pokameni.tapo",
+	"Name": "Tapo",
+	"Version": "0.1.0.0",
+	"Author": "pokameni",
+	"Description": "Contrôle local des ampoules Tapo L630 via le contrôleur web.",
+	"Category": "Tapo",
+	"CategoryIcon": "imgs/plugin/category-icon",
+	"CodePath": "bin/plugin.js",
+	"Icon": "imgs/plugin/marketplace",
+	"SDKVersion": 3,
+	"Software": {
+		"MinimumVersion": "6.9"
+	},
+	"OS": [
+		{
+			"Platform": "mac",
+			"MinimumVersion": "12"
+		},
+		{
+			"Platform": "windows",
+			"MinimumVersion": "10"
+		}
+	],
+	"Nodejs": {
+		"Version": "20",
+		"Debug": "enabled"
+	},
+	"Actions": [
+		{
+			"Name": "Commande",
+			"UUID": "com.pokameni.tapo.command",
+			"Icon": "imgs/actions/command/icon",
+			"Tooltip": "Allume, colore ou anime une ampoule Tapo, ou toutes à la fois.",
+			"PropertyInspectorPath": "ui/command.html",
+			"Controllers": ["Keypad"],
+			"UserTitleEnabled": false,
+			"States": [
+				{
+					"Image": "imgs/actions/command/off",
+					"Name": "Éteint",
+					"TitleAlignment": "bottom",
+					"ShowTitle": true
+				},
+				{
+					"Image": "imgs/actions/command/on",
+					"Name": "Allumé",
+					"TitleAlignment": "bottom",
+					"ShowTitle": true
+				}
+			]
+		}
+	]
+}

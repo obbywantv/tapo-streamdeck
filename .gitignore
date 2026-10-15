@@ -1,0 +1,4 @@
+node_modules/
+com.pokameni.tapo.sdPlugin/bin/
+com.pokameni.tapo.sdPlugin/logs/
+*.streamDeckPlugin
